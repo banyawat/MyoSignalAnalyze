@@ -1,9 +1,8 @@
-package myMyoSignalAnalyze;
+package myProject;
 
 import com.thalmic.myo.DeviceListener;
 import com.thalmic.myo.Hub;
 import com.thalmic.myo.Myo;
-import com.thalmic.myo.Pose;
 import com.thalmic.myo.enums.StreamEmgType;
 import com.thalmic.myo.example.EmgDataCollector;
 
@@ -86,8 +85,9 @@ public class Testing {
 	}
 	
 	/**
-	 * check which gesture is right for you
-	 * @param node
+	 * check which gesture is right for you 
+	 *
+	 ** @param node
 	 */
 	static void checkGesture(int node[]){
 		if(node[2]>THRESHOLD_VAL&&node[7]>THRESHOLD_VAL){	//signal is rather similar so..
