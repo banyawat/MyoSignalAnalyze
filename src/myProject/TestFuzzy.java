@@ -10,13 +10,16 @@ public class TestFuzzy {
 	public static int rules[][] = {{0,0,0,1,0,0,0,1},
 									{0,0,1,1,0,0,1,1},
 									{0,0,1,1,0,0,0,0},
-									{0,0,1,0,0,0,1,1}};
+									{0,0,1,0,0,0,1,1}},
+									gesture[] = {1,2,3,4};
+	static final int NUM_RULES = 4;
 	
 	
 	public static void main(String[] args)
 	{
 		String data;
-		int sample[], answerGesture;
+		int sample[];
+		double answerGesture, ruleanswer;
 		String sampleStr[];
 		
 		try {
@@ -34,10 +37,11 @@ public class TestFuzzy {
 			hub.addListener(dataCollector);
 
 			while (true) {
-				answerGesture = 0;
 				hub.run(1000 / 20);
 				data = dataCollector.toString();
 				if(data!="null"){
+					ruleanswer=1;
+					answerGesture = 0;
 					data = data.replaceAll("\\[|\\]|\\s", "");
 					sampleStr = data.split(",");
 					sample = new int[sampleStr.length];
@@ -45,10 +49,20 @@ public class TestFuzzy {
 						sample[i] = Integer.parseInt(sampleStr[i]); //get sample data from each nodes
 						if(sample[i]<0)
 							sample[i]*=-1;
-						//System.out.print(i+": "+sample[i]+"\t");
+						//System.out.print(i+: "+sample[i]+"\t");
 					}
+					for(int i=0;i<NUM_RULES;i++){
+						for(int j=0;j<sampleStr.length;j++){
+							if(rules[i][j]==1)
+								ruleanswer *= sensorActive(sample[j]);
+							else if(rules[i][j]==0)
+								ruleanswer *= sensorInactive(sample[j]);
+						}
+						answerGesture += gesture[i]*ruleanswer;
+					}
+					
+					System.out.print("MY ANS: "+answerGesture);
 					System.out.println();
-					//windowsCount++;
 				}
 			}
 		} catch (Exception e) {
@@ -62,14 +76,14 @@ public class TestFuzzy {
 		if(data<=32)
 			return 1;
 		else if(data >96)
-			return 0;
+			return 1;
 		else
 			return (data-32)/(-64)+1;
 	}
 	
 	public static double sensorActive(int data){
 		if(data<=32)
-			return 0;
+			return 1;
 		else if(data >96)
 			return 1;
 		else
