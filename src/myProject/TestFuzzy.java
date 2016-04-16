@@ -8,10 +8,13 @@ import com.thalmic.myo.example.EmgDataCollector;
 
 public class TestFuzzy {
 	public static int rules[][] = {{0,0,0,1,0,0,0,1},
-									{0,0,1,1,0,0,1,1},
-									{0,0,1,1,0,0,0,0},
-									{0,0,1,0,0,0,1,1}},
-									gesture[] = {1,2,3,4};
+									{-1,-1,1,1,-1,-1,1,1},
+									{-1,-1,1,1,-1,-1,0,0},
+									{-1,-1,1,-1,-1,-1,1,1}}, //rules defined
+									gesture[][] = {{1,-1,-1,-1},
+									{-1,1,-1,-1},
+									{-1,1,1,-1},
+									{-1,-1,-1,1}}; //gesture expected
 	static final int NUM_RULES = 4;
 	
 	
@@ -40,7 +43,7 @@ public class TestFuzzy {
 				hub.run(1000 / 20);
 				data = dataCollector.toString();
 				if(data!="null"){
-					ruleanswer=1;
+					ruleanswer=0;
 					answerGesture = 0;
 					data = data.replaceAll("\\[|\\]|\\s", "");
 					sampleStr = data.split(",");
@@ -51,17 +54,21 @@ public class TestFuzzy {
 							sample[i]*=-1;
 						//System.out.print(i+: "+sample[i]+"\t");
 					}
+					for(int s: sample){
+						System.out.print(s+" ");
+					}
+					System.out.println();
 					for(int i=0;i<NUM_RULES;i++){
 						for(int j=0;j<sampleStr.length;j++){
 							if(rules[i][j]==1)
-								ruleanswer *= sensorActive(sample[j]);
+								ruleanswer += sensorActive(sample[j]);
 							else if(rules[i][j]==0)
-								ruleanswer *= sensorInactive(sample[j]);
+								ruleanswer += sensorInactive(sample[j]);
+							System.out.println("Rule "+ sensorActive(sample[j]));
 						}
-						answerGesture += gesture[i]*ruleanswer;
+						//System.out.println("ANS: "+ruleanswer);
 					}
-					
-					System.out.print("MY ANS: "+answerGesture);
+					//System.out.print("MY ANS: "+answerGesture);
 					System.out.println();
 				}
 			}
@@ -73,21 +80,21 @@ public class TestFuzzy {
 		} 	
 	
 	public static double sensorInactive(int data){
-		if(data<=32)
+		if(data<32)
 			return 1;
 		else if(data >96)
-			return 1;
+			return 0;
 		else
-			return (data-32)/(-64)+1;
+			return ((double)data-32)/(-64)+1;
 	}
 	
 	public static double sensorActive(int data){
-		if(data<=32)
-			return 1;
+		if(data<32)
+			return 0;
 		else if(data >96)
 			return 1;
 		else
-			return (data-32)/64;
+			return ((double)data-32)/64;
 	}
 }
 	
