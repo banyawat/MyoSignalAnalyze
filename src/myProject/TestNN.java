@@ -7,11 +7,11 @@ import com.thalmic.myo.enums.StreamEmgType;
 import com.thalmic.myo.example.EmgDataCollector;
 
 public class TestNN {
-	static final int WINDOWS=20;
-	static final int NODE_NUM=8;
-	static final int THRESHOLD_VAL=25;
-	public static int analyzeData[][] = new int[NODE_NUM][WINDOWS];
-	public static int maximum[] = new int[NODE_NUM];
+	static final int INPUT_NUM = 8;
+	static final int HIDDEN_NUM = 9;
+	static final int OUTPUT_NUM = 4;
+	public static double[][] weightH = new double[HIDDEN_NUM][INPUT_NUM];
+	public static double[][] weightO = new double[OUTPUT_NUM][HIDDEN_NUM];
 	
 	
 	public static void main(String[] args)
